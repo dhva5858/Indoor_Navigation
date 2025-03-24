@@ -1,13 +1,11 @@
-from Layer_1.driver.roboclaw_3 import Roboclaw
+from roboclaw_3 import Roboclaw
 #import paho.mqtt.client as mqtt
 from Layer_3.navigation.a_star import AStar
-from Layer_3.navigation.obstacle import Obstacle
-from Layer_1.sensor.sick import SICK
 import time
 import os
 
 # Replace with your serial port and baud rate
-roboclaw = Roboclaw("/dev/ttyACM0",115200)
+roboclaw = Roboclaw("COM13",115200)
 #roboclaw = Roboclaw("/dev/ttyACM0",115200)
 
 # Open the serial port
@@ -20,39 +18,25 @@ address = 0x80
 fixed_value_90 = 5000
 fixed_value_distance = 9700
 sample_time = 0.1   
-one_round_cm = 68     
+one_round_cm = 68      
 
-def __init__(self, sick_instance):
-    self.sick = sick_instance
-    
-
-def execute_movement_commands(commands,sick_instance):
-    
+def execute_movement_commands(commands):
     for action, value in commands:
 
         if action == 'right':
             right(int(value))
-            Obstacle.update_clearance_flags()
-            Obstacle.navigate_and_return()
-            
         elif action == 'left':
             left(int(value))
-            Obstacle.update_clearance_flags()
-            Obstacle.navigate_and_return()
-
         elif action == 'forward':
             forward(int(value))
-            obstacleavoid.update_clearance_flags()
-            obstacleavoid.navigate_and_return()
         elif action == 'backward':
             backward(int(value))
-            
         time.sleep(sample_time)
 
 def right(Angle):
         #Angle= int(input(" At what angle do you want turn: "))
         m2count = int((Angle*fixed_value_90)/90)
-        #print(m2count)
+        print(m2count)
         roboclaw.ResetEncoders(0x80)
         roboclaw.ForwardM2(address,speed)
         roboclaw.BackwardM1(address,speed)
@@ -60,7 +44,7 @@ def right(Angle):
         while True :
             motor_2 = roboclaw.ReadEncM2(0x80)
             middle_value = int(motor_2[1]) #middle_value is the only encoder value other wise we got value (164,4700,0)
-            #print(middle_value) 
+            print(middle_value) 
             range1 =  m2count - plus
             range2 =  m2count + plus  
             if range1< middle_value < range2:
@@ -71,7 +55,7 @@ def right(Angle):
 
 def left(Angle):
         m1count= int((Angle*fixed_value_90)/90)
-        #print(m1count)
+        print(m1count)
         roboclaw.ResetEncoders(0x80)
         roboclaw.ForwardM1(address,speed)
         roboclaw.BackwardM2(address,speed)
@@ -89,7 +73,7 @@ def left(Angle):
 def forward(distance):
         #Drive both motors forward
         m1count= int(((distance*1.53)*fixed_value_distance)/one_round_cm)
-        #print(m1count)
+        print(m1count)
         roboclaw.ResetEncoders(0x80)
         roboclaw.ForwardM1(address,speed)
         roboclaw.ForwardM2(address,speed)
@@ -107,7 +91,7 @@ def forward(distance):
 def backward(distance):
         #Drive both motors backward
         m1count= int(((distance*1.53)*fixed_value_distance)/one_round_cm)
-        #print(m1count)
+        print(m1count)
         roboclaw.ResetEncoders(0x80)
         roboclaw.BackwardM1(address,speed)
         roboclaw.BackwardM2(address,speed)
@@ -154,7 +138,7 @@ while True:
     else:
         print("Invalid speed. Please enter a speed between 1 and 100.")
         
-file_path = r'/home/indoor/Documents/Latest_1/rover/r_command.txt'
+file_path = r'C:\Users\dpvas\Desktop\Application_Software\r_command.txt'
 def main():
     with open(file_path, 'r') as file:
          for line in file:
@@ -163,7 +147,6 @@ def main():
             time.sleep(1)
 
 if __name__ == "__main__":
-        
     main()
 
 '''with open(file_path, 'r') as file:
@@ -203,3 +186,8 @@ while True:
                                 rotate360()
                         
 '''''
+
+
+
+
+        
